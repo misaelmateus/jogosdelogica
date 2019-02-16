@@ -8,16 +8,7 @@ class quizPage extends StatefulWidget {
   _quizPageState createState() {
     // TODO: implement createState
 
-    List<QuestionData> list = new List<QuestionData>();
-    list.add(new QuestionData('Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?', ['1', '2', '3', '4', '5'], 2));
-    list.add(new QuestionData('Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?', ['1', '2', '3', '4', '5'], 2));
-    list.add(new QuestionData('Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?', ['1', '2', '3', '4', '5'], 2));
-    list.add(new QuestionData('Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?', ['1', '2', '3', '4', '5'], 2));
-    list.add(new QuestionData('Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?', ['1', '2', '3', '4', '5'], 2));
-    list.add(new QuestionData('Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?', ['1', '2', '3', '4', '5'], 2));
-    list.add(new QuestionData('Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?', ['1', '2', '3', '4', '5'], 2));
 
-    data = new QuizData("Titulo", "Um pirata quer transportar, do seu navio para a sua ilha secreta, quatro arcas repletas de tesouros roubados: uma arca com Diamantes, uma arca com Esmeraldas, uma arca com Moedas de Ouro e uma arca com Moedas de Prata. Cada uma das arcas pesa 80 quilos, e o valor das arcas são diferentes entre si, sendo que a arca com Diamantes é a mais valiosa, seguida da arca com Esmeraldas, seguida da arca com Moedas de Ouro, seguida da arca com Moedas de Prata, que é a menos valiosa. O pirata tem apenas um barquinho para levar as arcas do navio para a ilha, e existem duas restrições:\n• o barquinho pode carregar, além do pirata, no máximo 200 quilos.\n• as arcas estão lacradas e não podem ser abertas; assim, o pirata deve levar a arca inteira no barquinho ou não levar a arca.\nNas questões abaixo, considere que uma viagem compreende o trajeto navio-ilha-navio.", list);
     return _quizPageState();
   }
 
@@ -32,6 +23,34 @@ class _quizPageState extends State<quizPage> {
 
   @override
   Widget build(BuildContext context, ) {
+    if(widget.data == null) {
+      List<QuestionData> list = new List<QuestionData>();
+      list.add(new QuestionData(
+          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
+          ['1', '2', '3', '4', '5'], 2));
+      list.add(new QuestionData(
+          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
+          ['1', '2', '3', '4', '5'], 2));
+      list.add(new QuestionData(
+          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
+          ['1', '2', '3', '4', '5'], 2));
+      list.add(new QuestionData(
+          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
+          ['1', '2', '3', '4', '5'], 2));
+      list.add(new QuestionData(
+          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
+          ['1', '2', '3', '4', '5'], 2));
+      list.add(new QuestionData(
+          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
+          ['1', '2', '3', '4', '5'], 2));
+      list.add(new QuestionData(
+          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
+          ['1', '2', '3', '4', '5'], 2));
+
+      widget.data = new QuizData("Titulo",
+          "Um pirata quer transportar, do seu navio para a sua ilha secreta, quatro arcas repletas de tesouros roubados: uma arca com Diamantes, uma arca com Esmeraldas, uma arca com Moedas de Ouro e uma arca com Moedas de Prata. Cada uma das arcas pesa 80 quilos, e o valor das arcas são diferentes entre si, sendo que a arca com Diamantes é a mais valiosa, seguida da arca com Esmeraldas, seguida da arca com Moedas de Ouro, seguida da arca com Moedas de Prata, que é a menos valiosa. O pirata tem apenas um barquinho para levar as arcas do navio para a ilha, e existem duas restrições:\n• o barquinho pode carregar, além do pirata, no máximo 200 quilos.\n• as arcas estão lacradas e não podem ser abertas; assim, o pirata deve levar a arca inteira no barquinho ou não levar a arca.\nNas questões abaixo, considere que uma viagem compreende o trajeto navio-ilha-navio.",
+          list);
+    }
     questionData = widget.data;
     return Scaffold(
       appBar: AppBar(
