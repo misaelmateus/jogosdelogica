@@ -48,7 +48,7 @@ class _quizPageState extends State<quizPage> {
           ['1', '2', '3', '4', '5'], 2));
 
       widget.data = new QuizData("Titulo",
-          "Um pirata quer transportar, do seu navio para a sua ilha secreta, quatro arcas repletas de tesouros roubados: uma arca com Diamantes, uma arca com Esmeraldas, uma arca com Moedas de Ouro e uma arca com Moedas de Prata. Cada uma das arcas pesa 80 quilos, e o valor das arcas são diferentes entre si, sendo que a arca com Diamantes é a mais valiosa, seguida da arca com Esmeraldas, seguida da arca com Moedas de Ouro, seguida da arca com Moedas de Prata, que é a menos valiosa. O pirata tem apenas um barquinho para levar as arcas do navio para a ilha, e existem duas restrições:\n• o barquinho pode carregar, além do pirata, no máximo 200 quilos.\n• as arcas estão lacradas e não podem ser abertas; assim, o pirata deve levar a arca inteira no barquinho ou não levar a arca.\nNas questões abaixo, considere que uma viagem compreende o trajeto navio-ilha-navio.",
+          "Um pirata quer transportar, do seu navio para a sua ilha secreta, quatro arcas repletas de tesouros roubados: uma arca com Diamantes, uma arca com Esmeraldas, uma arca com Moedas de Ouro e uma arca com Moedas de Prata. Cada uma das arcas pesa 80 quilos, e o valor das arcas são diferentes entre si, sendo que a arca com Diamantes é a mais valiosa, seguida da arca com Esmeraldas, seguida da arca com Moedas de Ouro, seguida da arca com Moedas de Prata, que é a menos valiosa. O pirata tem apenas um barquinho para levar as arcas do navio para a ilha, e existem duas restrições:\n\n• o barquinho pode carregar, além do pirata, no máximo 200 quilos.\n• as arcas estão lacradas e não podem ser abertas; assim, o pirata deve levar a arca inteira no barquinho ou não levar a arca.\n\nNas questões abaixo, considere que uma viagem compreende o trajeto navio-ilha-navio.",
           list);
     }
     questionData = widget.data;
@@ -58,11 +58,11 @@ class _quizPageState extends State<quizPage> {
         automaticallyImplyLeading: false,
       ),
       body:
-            ListView.builder(
+        ListView.builder(
             itemCount: questionData.lenght()+2,
             itemBuilder: (context, index) => Card(
-              color: index == 0 ? Colors.cyan : Colors.white,
-              elevation: index <= questionData.lenght() ? 1.0 : 0.0,
+              color: index == 0 ? Colors.grey[200] : Colors.white,
+              elevation: index <= questionData.lenght() ? 1.0 + (index == 0 ? 1.0 : 0.0) : 0.0,
               child:
                 index == questionData.lenght()+1
                   ? Center(
@@ -72,40 +72,84 @@ class _quizPageState extends State<quizPage> {
                         color: Colors.blue,
                       )
                     )
+                  : index == 0 ? StatementTile(questionData : this.questionData)
+                  : QuestionTile(questionData : this.questionData, index: index)
 
-                  : ExpansionTile(
-                    title: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Text(
-                            index == 0 ? "Enunciado" : questionData.textQuestion(index-1),
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.normal
-                            ),
-                          ),
-                          ]
-                      ),
-                    ),
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.grey[100],
-                      child: index == 0 ? Text("Q") : Text(String.fromCharCode(index + 48)),
-                    ),
-                    children: (index == 0 ?
-                        [StatementWidget(quizData: this.questionData)] :
-                        [AnswerWidget(questionData.getQuestion(index-1))] )
-                  ),
-              ),
           )
-    );
+    ));
   }
 
 }
 
+class QuestionTile extends StatelessWidget {
+  final QuizData questionData;
+  final int index;
+  QuestionTile({this.questionData, this.index});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return
+      ExpansionTile(
+          title: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(
+                    questionData.textQuestion(index-1),
+                    style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                        fontStyle: FontStyle.normal,
+                        color: Colors.black,
+                        decorationColor: Colors.black12
+                    ),
+                  ),
+                ]
+            ),
+          ),
+          leading: CircleAvatar(
+            backgroundColor: Colors.grey[100],
+            child: Text(String.fromCharCode(index + 48)),
+          ),
+          children: [AnswerWidget(questionData.getQuestion(index-1))]
+      );
+  }
+
+}
+class StatementTile extends StatelessWidget {
+  final QuizData questionData;
+
+  StatementTile({this.questionData});
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+            child: Column(
+              children:[
+                Text(
+                  "Enunciado",
+                  style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.normal,
+                      color: Colors.black,
+                      decorationColor: Colors.black12
+                  ),
+                ),
+                StatementWidget(quizData: this.questionData)
+              ]
+            )
+        ),
+     );
+  }
+
+
+}
 class StatementWidget extends StatelessWidget {
   final QuizData quizData;
   @override
