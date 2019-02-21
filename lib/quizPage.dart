@@ -1,57 +1,69 @@
 import 'package:flutter/material.dart';
 import 'quiz.dart';
 import 'question.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class quizPage extends StatefulWidget {
+class QuizPage extends StatefulWidget {
   @override
   QuizData data;
-  _quizPageState createState() {
+  _QuizPageState createState() {
     // TODO: implement createState
 
 
-    return _quizPageState();
+    return _QuizPageState();
   }
 
 }
 
-class _quizPageState extends State<quizPage> {
-  QuizData questionData;
+class _QuizPageState extends State<QuizPage> {
 
   void _onButtonQuestionPressed(){
 
   }
+  
+  @override
+  void initState() {
+    super.initState();
+    fetchQuizData();
+  }
+
+  void fetchQuizData() {
+    Firestore.instance.collection('quiz').limit(1).snapshots()
+      .listen((data) {
+        var doc = data.documents.first;
+        print(doc);
+
+        List<QuestionData> questions = [];
+        for (var q in doc['question']) {
+          List<String> alternatives = [];
+          for (var a in q['alternative']) {
+            alternatives.add(a);
+          }
+          QuestionData questionData = QuestionData(q['text'], alternatives, q['correctAlternative']);
+          questions.add(questionData);
+        }
+
+        setState(() {
+          widget.data = QuizData(doc['title'], doc['text'], questions);
+        });
+      });
+  }
 
   @override
   Widget build(BuildContext context, ) {
-    if(widget.data == null) {
-      List<QuestionData> list = new List<QuestionData>();
-      list.add(new QuestionData(
-          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
-          ['1', '2', '3', '4', '5'], 2));
-      list.add(new QuestionData(
-          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
-          ['1', '2', '3', '4', '5'], 2));
-      list.add(new QuestionData(
-          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
-          ['1', '2', '3', '4', '5'], 2));
-      list.add(new QuestionData(
-          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
-          ['1', '2', '3', '4', '5'], 2));
-      list.add(new QuestionData(
-          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
-          ['1', '2', '3', '4', '5'], 2));
-      list.add(new QuestionData(
-          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
-          ['1', '2', '3', '4', '5'], 2));
-      list.add(new QuestionData(
-          'Quantas viagens são necessárias para o pirata levar todas as arcas para a ilha secreta?',
-          ['1', '2', '3', '4', '5'], 2));
-
-      widget.data = new QuizData("Titulo",
-          "Um pirata quer transportar, do seu navio para a sua ilha secreta, quatro arcas repletas de tesouros roubados: uma arca com Diamantes, uma arca com Esmeraldas, uma arca com Moedas de Ouro e uma arca com Moedas de Prata. Cada uma das arcas pesa 80 quilos, e o valor das arcas são diferentes entre si, sendo que a arca com Diamantes é a mais valiosa, seguida da arca com Esmeraldas, seguida da arca com Moedas de Ouro, seguida da arca com Moedas de Prata, que é a menos valiosa. O pirata tem apenas um barquinho para levar as arcas do navio para a ilha, e existem duas restrições:\n\n• o barquinho pode carregar, além do pirata, no máximo 200 quilos.\n• as arcas estão lacradas e não podem ser abertas; assim, o pirata deve levar a arca inteira no barquinho ou não levar a arca.\n\nNas questões abaixo, considere que uma viagem compreende o trajeto navio-ilha-navio.",
-          list);
+    if (widget.data == null) {
+      // retorna progress indicator
+      return Scaffold(
+          appBar: AppBar(
+            title: Text("Resolver Questão"),
+            automaticallyImplyLeading: false,
+          ),
+          body: Center(
+              child: CircularProgressIndicator(value: null)
+          )
+      );
     }
-    questionData = widget.data;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Resolver Questão"),
@@ -59,12 +71,12 @@ class _quizPageState extends State<quizPage> {
       ),
       body:
         ListView.builder(
-            itemCount: questionData.lenght()+2,
+            itemCount: widget.data.lenght()+2,
             itemBuilder: (context, index) => Card(
               color: index == 0 ? Colors.grey[200] : Colors.white,
-              elevation: index <= questionData.lenght() ? 1.0 + (index == 0 ? 1.0 : 0.0) : 0.0,
+              elevation: index <= widget.data.lenght() ? 1.0 + (index == 0 ? 1.0 : 0.0) : 0.0,
               child:
-                index == questionData.lenght()+1
+                index == widget.data.lenght()+1
                   ? Center(
                       child:RaisedButton(
                         child: Text("Avançar", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
@@ -72,8 +84,8 @@ class _quizPageState extends State<quizPage> {
                         color: Colors.blue,
                       )
                     )
-                  : index == 0 ? StatementTile(questionData : this.questionData)
-                  : QuestionTile(questionData : this.questionData, index: index)
+                  : index == 0 ? StatementTile(questionData : widget.data)
+                  : QuestionTile(questionData : widget.data, index: index)
 
           )
     ));
@@ -122,6 +134,7 @@ class StatementTile extends StatelessWidget {
   final QuizData questionData;
 
   StatementTile({this.questionData});
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

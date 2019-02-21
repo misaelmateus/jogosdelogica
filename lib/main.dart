@@ -46,10 +46,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String text = "Não resolveu nenhum questão";
   void _awaitSolveQuestion() async{
-    var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => quizPage()));
+    var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => QuizPage()));
 
     setState( () {
-      text = result;
+      text = result ?? text;
     });
   }
   @override

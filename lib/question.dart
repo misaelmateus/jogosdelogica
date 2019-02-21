@@ -1,4 +1,4 @@
-class QuestionData{
+class QuestionData {
   String text;
   List<String> alternatives;
   int correctAlternative;
