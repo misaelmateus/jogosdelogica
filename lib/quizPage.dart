@@ -33,7 +33,13 @@ class _QuizPageState extends State<QuizPage> {
             builder: (context) =>
                 ResultPage(numSolved: numSolved, numQuestions: numQuestions)));
 
-    setState(() {});
+    setState(() {
+      if(result == 1){
+        this.data = null;
+        this.lock = 0;
+        fetchQuizData();
+      }
+    });
   }
 
   @override
