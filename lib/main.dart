@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
 
         accentColor: Color(0xffFFC107),
 
-
         // Define the default Font Family
         fontFamily: 'Montserrat',
 
@@ -45,37 +44,35 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String text = "Não resolveu nenhum questão";
-  void _awaitSolveQuestion() async{
-    var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => QuizPage()));
 
-    setState( () {
+  void _awaitSolveQuestion() async {
+    var result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => QuizPage()));
+
+    setState(() {
       text = result ?? text;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
-              child: const Text('Resolver Questão'),
-              onPressed: (){
-                _awaitSolveQuestion();
-              }
-            ),
-            Text(
-              text
-            )
+                child: const Text('Resolver Questão'),
+                onPressed: () {
+                  _awaitSolveQuestion();
+                }),
+            Text(text)
           ],
         ),
       ),
-
     );
   }
 }
