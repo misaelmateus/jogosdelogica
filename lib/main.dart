@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'quizPage.dart';
-
+import 'loginPage.dart';
 void main() => runApp(MyApp());
+
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -28,51 +29,8 @@ class MyApp extends StatelessWidget {
           body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
         ),
       ),
-      home: MyHomePage(title: "Flutter Demo Home Page"),
+      home: LoginPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  String text = "Não resolveu nenhum questão";
-
-  void _awaitSolveQuestion() async {
-    var result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => QuizPage()));
-
-    setState(() {
-      text = result ?? text;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-                child: const Text('Resolver Questão'),
-                onPressed: () {
-                  _awaitSolveQuestion();
-                }),
-            Text(text)
-          ],
-        ),
-      ),
-    );
-  }
-}

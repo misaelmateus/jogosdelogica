@@ -29,7 +29,9 @@ class ResultPage extends StatelessWidget {
               children: <Widget>[
                 RaisedButton(
                   child: Text("Ver solução"),
-                  onPressed: () => (1),
+                  onPressed: () {
+                    Navigator.pop(context, 0);
+                  },
                 ),
                 RaisedButton(
                   child: Text("Chat da Questão"),
@@ -40,7 +42,9 @@ class ResultPage extends StatelessWidget {
             ),
             RaisedButton(
               child: Text("Próxima Questão"),
-              onPressed: () => (1),
+              onPressed: () {
+                    Navigator.pop(context, 1);
+                  },
             )
           ],
           mainAxisAlignment: MainAxisAlignment.center,
