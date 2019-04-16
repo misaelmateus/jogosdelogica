@@ -7,6 +7,8 @@ class ResultPage extends StatelessWidget {
   final int numSolved;
   final int numQuestions;
 
+  static const int SEE_RESULT_MESSAGE = 9998, NEW_QUIZ_MESSAGE = 9999;
+
   ResultPage({this.numSolved, this.numQuestions});
 
   @override
@@ -30,12 +32,12 @@ class ResultPage extends StatelessWidget {
                 RaisedButton(
                   child: Text("Ver solução"),
                   onPressed: () {
-                    Navigator.pop(context, 0);
+                    Navigator.pop(context, SEE_RESULT_MESSAGE);
                   },
                 ),
                 RaisedButton(
                   child: Text("Chat da Questão"),
-                  onPressed: () => (1),
+                  onPressed: () => null,
                 )
               ],
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -43,7 +45,7 @@ class ResultPage extends StatelessWidget {
             RaisedButton(
               child: Text("Próxima Questão"),
               onPressed: () {
-                    Navigator.pop(context, 1);
+                    Navigator.pop(context, NEW_QUIZ_MESSAGE);
                   },
             )
           ],

@@ -7,8 +7,6 @@ import 'resultPage.dart';
 class QuizPage extends StatefulWidget {
   @override
   _QuizPageState createState() {
-    // TODO: implement createState
-
     return _QuizPageState();
   }
 }
@@ -34,7 +32,7 @@ class _QuizPageState extends State<QuizPage> {
                 ResultPage(numSolved: numSolved, numQuestions: numQuestions)));
 
     setState(() {
-      if(result == 1){
+      if (result == ResultPage.NEW_QUIZ_MESSAGE) {
         this.data = null;
         this.lock = 0;
         fetchQuizData();

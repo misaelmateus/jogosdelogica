@@ -6,7 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
-class LoginPage extends StatelessWidget{
+class LoginPage extends StatelessWidget {
 
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -15,8 +15,8 @@ class LoginPage extends StatelessWidget{
     print("Cheguei on sign in");
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
-    final GoogleSignInAuthentication googleAuth = await googleUser
-        .authentication;
+    final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
@@ -26,10 +26,10 @@ class LoginPage extends StatelessWidget{
     final FirebaseUser user = await _auth.signInWithCredential(credential);
     print("signed in " + user.displayName);
 
-    if(user != null){
+    if (user != null) {
       Navigator.pop(context);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MyHomePage(title: "Lógica APP")));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => MyHomePage(title: "Lógica APP")));
     }
   }
 
@@ -49,8 +49,6 @@ class LoginPage extends StatelessWidget{
         ))
     );
   }
-
-
 }
 
 class GoogleButton extends StatelessWidget {
@@ -109,7 +107,5 @@ class GoogleButton extends StatelessWidget {
         ],
       ),
     );
-
-
   }
 }
