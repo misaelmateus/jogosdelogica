@@ -1,19 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:jogosdelogica/main.dart';
+
 import 'quizPage.dart';
-import 'loginPage.dart';
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
+class HomePage extends StatefulWidget {
   final String title;
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-class _MyHomePageState extends State<MyHomePage> {
-  String text = "Não resolveu nenhum questão";
-  FirebaseUser user;
+  final FirebaseUser user;
 
+  HomePage(this.user, {Key key, this.title = MyApp.AppTitle}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState(this.user);
+}
+
+class _HomePageState extends State<HomePage> {
+  String text = "Não resolveu nenhum questão";
+  final FirebaseUser user;
+
+  _HomePageState(this.user);
 
   void _awaitSolveQuestion() async {
     var result = await Navigator.push(
@@ -24,10 +29,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _awaitLogin() async {
-    print("Cheguei no login");
-    this.user = await Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,9 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             RaisedButton(
                 child: const Text('Resolver Questão'),
-                onPressed: () {
-                  _awaitSolveQuestion();
-                }),
+                onPressed: () => _awaitSolveQuestion()),
             Text(text)
           ],
         ),

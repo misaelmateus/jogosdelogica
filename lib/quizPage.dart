@@ -49,7 +49,6 @@ class _QuizPageState extends State<QuizPage> {
   void fetchQuizData() {
     Firestore.instance.collection('quiz').limit(1).snapshots().listen((data) {
       var doc = data.documents.first;
-      print(doc);
 
       List<QuestionData> questions = [];
       for (var q in doc['question']) {
@@ -69,9 +68,7 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     if (this.data == null) {
       // retorna progress indicator
       return Scaffold(
@@ -132,7 +129,6 @@ class QuestionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ExpansionTile(
         title: Padding(
           padding: const EdgeInsets.all(18.0),
@@ -175,7 +171,6 @@ class StatementTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Center(

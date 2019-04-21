@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'loginPage.dart';
+import 'package:jogosdelogica/loginPage.dart';
+
 void main() => runApp(MyApp());
 
-
-
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  static const String AppTitle = 'Jogos de Lógica';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Flutter Demo",
+      title: AppTitle,
       theme: ThemeData(
         // Define the default Brightness and Colors
         primaryColor: Color(0xff03A9F4),
@@ -33,4 +33,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
