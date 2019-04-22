@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String text = "Não resolveu nenhum questão";
+  String text = "Não resolveu nenhuma questão";
   final FirebaseUser user;
 
   _HomePageState(this.user);
@@ -36,17 +36,64 @@ class _HomePageState extends State<HomePage> {
         title: Text(widget.title),
         automaticallyImplyLeading: false,
       ),
+      body: Padding(
+        child: Column(
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Image.network(this.user.photoUrl),
+                Padding(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(this.user.displayName, textScaleFactor: 2.0),
+                      Text(this.user.email, textScaleFactor: 1.2),
+                    ],
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Padding(
+                    child: Text('00', textScaleFactor: 6.0),
+                    padding: EdgeInsets.all(8.0)),
+                Flexible(
+                  child: Padding(
+                    child: Text('Questões Resolvidas.', textScaleFactor: 2.0),
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                ),
+              ],
+            ),
+            Center(
+              child: RaisedButton(
+                  child: const Text('Resolver uma questão!', textScaleFactor: 1.2),
+                  onPressed: () => _awaitSolveQuestion(),
+              ),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.all(8.0),
+      ),
+      /*
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+            Image.network(this.user.photoUrl),
+            Text("Olá ${this.user.displayName}."),
             RaisedButton(
-                child: const Text('Resolver Questão'),
+                child: const Text('Resolver uma questão!'),
                 onPressed: () => _awaitSolveQuestion()),
             Text(text)
           ],
         ),
-      ),
+      ),*/
     );
   }
 }
