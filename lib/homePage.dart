@@ -42,14 +42,24 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Image.network(this.user.photoUrl),
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: NetworkImage(this.user.photoUrl),
+                        fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 Padding(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(this.user.displayName, textScaleFactor: 2.0),
-                      Text(this.user.email, textScaleFactor: 1.2),
+                      Text(this.user.displayName, textScaleFactor: 1.8),
+                      Text(this.user.email, textScaleFactor: 1.0),
                     ],
                   ),
                   padding: EdgeInsets.all(8.0),
@@ -72,7 +82,7 @@ class _HomePageState extends State<HomePage> {
             ),
             Center(
               child: RaisedButton(
-                  child: const Text('Resolver uma questão!', textScaleFactor: 1.2),
+                  child: const Text('Resolver!', textScaleFactor: 1.2),
                   onPressed: () => _awaitSolveQuestion(),
               ),
             ),
