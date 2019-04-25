@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,14 +21,25 @@ class LoginPage extends StatelessWidget {
     );
 
     final FirebaseUser user = await _auth.signInWithCredential(credential);
-    print("User signed in with username: " + user.displayName);
 
     if (user != null) {
+      print("User signed in with username: " + user.displayName);
+
+      // save user information on database
+
+      Firestore.instance.collection('user').document(user.uid)
+          .setData({
+        'name': user.displayName,
+        'email': user.email,
+        'photoUrl': user.photoUrl,
+      });
+
+      // open HomePage for this user
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  HomePage(user, ))); // send user back to previous page
+              builder: (context) => HomePage(user) // send user back to previous page
+          ));
     }
   }
 
