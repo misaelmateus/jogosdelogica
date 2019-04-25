@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jogosdelogica/main.dart';
@@ -15,18 +16,33 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String text = "Não resolveu nenhuma questão";
   final FirebaseUser user;
+  int qtdQuizSolved = 0;
 
   _HomePageState(this.user);
 
   void _awaitSolveQuestion() async {
-    var result = await Navigator.push(
+    Navigator.push(
         context, MaterialPageRoute(builder: (context) => QuizPage(this.user)));
+  }
 
-    setState(() {
-      text = result ?? text;
+  void _fetchQtdQuizSolved() async {
+    Firestore.instance
+        .collection('user')
+        .document(this.user.uid)
+        .get()
+        .then((DocumentSnapshot snapshot) {
+      setState(() {
+        this.qtdQuizSolved = snapshot.data['quizDone']?.length ?? 0;
+      });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fetchQtdQuizSolved();
   }
 
   @override
@@ -48,8 +64,8 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: NetworkImage(this.user.photoUrl),
-                        fit: BoxFit.cover,
+                      image: NetworkImage(this.user.photoUrl),
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -70,7 +86,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 Padding(
-                    child: Text('00', textScaleFactor: 6.0),
+                    child: Text('${this.qtdQuizSolved}', textScaleFactor: 6.0),
                     padding: EdgeInsets.all(8.0)),
                 Flexible(
                   child: Padding(
@@ -82,8 +98,8 @@ class _HomePageState extends State<HomePage> {
             ),
             Center(
               child: RaisedButton(
-                  child: const Text('Resolver!', textScaleFactor: 1.2),
-                  onPressed: () => _awaitSolveQuestion(),
+                child: const Text('Resolver!', textScaleFactor: 1.2),
+                onPressed: () => _awaitSolveQuestion(),
               ),
             ),
           ],

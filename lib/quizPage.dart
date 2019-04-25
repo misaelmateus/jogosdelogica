@@ -34,19 +34,31 @@ class _QuizPageState extends State<QuizPage> {
     if (this.lock == 0) {
       // Update database of quizzes the user done
 
-      final userDoc = Firestore.instance.collection('user').document(
-          this.user.uid);
+      final userDoc =
+      Firestore.instance.collection('user').document(this.user.uid);
       Firestore.instance.runTransaction((Transaction ts) async {
-        var userQuizSnapshot = await ts.get(userDoc);
-        if (userQuizSnapshot.exists) {
-          final quizzes = userQuizSnapshot.data['quiz'] ?? {};
-          final countQuiz = quizzes[this.data.uid] ?? 0;
+        var userSnapshot = await ts.get(userDoc);
+        if (userSnapshot.exists) {
+          final quizAttempt = userSnapshot.data['quizAttempt'] ?? {};
+          final countQuiz = quizAttempt[this.data.uid] ?? 0;
 
-          await ts.update(userDoc, {
-            'quiz': {
-              this.data.uid: countQuiz + 1,
-            },
-          });
+          await ts.update(
+              userDoc,
+              (() =>
+              numSolved == numQuestions
+                  ? {
+                'quizAttempt': {
+                  this.data.uid: countQuiz + 1,
+                }
+              }
+                  : {
+                'quizAttempt': {
+                  this.data.uid: countQuiz + 1,
+                },
+                'quizDone': {
+                  this.data.uid: true,
+                },
+              })());
         }
       });
     }
