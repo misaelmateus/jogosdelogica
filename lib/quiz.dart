@@ -1,13 +1,10 @@
 import 'question.dart';
 
 class QuizData {
-  String title, text;
+  String uid, title, text;
   List<QuestionData> questions;
-  QuizData(String title, String text, List<QuestionData> questions){
-    this.title = title;
-    this.text = text;
-    this.questions = questions;
-  }
+
+  QuizData(this.uid, this.title, this.text, this.questions);
 
   int lenght() => questions.length;
   int chosed(int index) => questions[index].chosed;

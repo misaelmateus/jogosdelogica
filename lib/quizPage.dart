@@ -1,19 +1,28 @@
-import 'package:flutter/material.dart';
-import 'quiz.dart';
-import 'question.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+import 'question.dart';
+import 'quiz.dart';
 import 'resultPage.dart';
 
 class QuizPage extends StatefulWidget {
+  final FirebaseUser user;
+
+  QuizPage(this.user);
+
   @override
   _QuizPageState createState() {
-    return _QuizPageState();
+    return _QuizPageState(this.user);
   }
 }
 
 class _QuizPageState extends State<QuizPage> {
   QuizData data;
   int lock = 0;
+  FirebaseUser user;
+
+  _QuizPageState(this.user);
 
   void _onButtonQuestionSolved() async {
     int numSolved = 0, numQuestions = this.data.questions.length;
@@ -21,7 +30,26 @@ class _QuizPageState extends State<QuizPage> {
       if (this.data.questions[i].chosed ==
           this.data.questions[i].correctAlternative) numSolved++;
     }
-    // Update database
+
+    if (this.lock == 0) {
+      // Update database of quizzes the user done
+
+      final userDoc = Firestore.instance.collection('user').document(
+          this.user.uid);
+      Firestore.instance.runTransaction((Transaction ts) async {
+        var userQuizSnapshot = await ts.get(userDoc);
+        if (userQuizSnapshot.exists) {
+          final quizzes = userQuizSnapshot.data['quiz'] ?? {};
+          final countQuiz = quizzes[this.data.uid] ?? 0;
+
+          await ts.update(userDoc, {
+            'quiz': {
+              this.data.uid: countQuiz + 1,
+            },
+          });
+        }
+      });
+    }
 
     lock = 1;
 
@@ -57,12 +85,13 @@ class _QuizPageState extends State<QuizPage> {
           alternatives.add(a);
         }
         QuestionData questionData =
-            QuestionData(q['text'], alternatives, q['correctAlternative']);
+        QuestionData(q['text'], alternatives, q['correctAlternative']);
         questions.add(questionData);
       }
 
       setState(() {
-        this.data = QuizData(doc['title'], doc['text'], questions);
+        this.data =
+            QuizData(doc.documentID, doc['title'], doc['text'], questions);
       });
     });
   }
@@ -96,9 +125,9 @@ class _QuizPageState extends State<QuizPage> {
                       child: index == 0
                           ? StatementTile(questionData: this.data)
                           : QuestionTile(
-                              questionData: this.data,
-                              index: index,
-                              lock: this.lock)))),
+                          questionData: this.data,
+                          index: index,
+                          lock: this.lock)))),
           Container(
             child: FlatButton(
               child: Text("Avançar",
@@ -150,9 +179,9 @@ class QuestionTile extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: this.lock == 1
               ? (this.questionData.correctAlternative(index - 1) ==
-                      this.questionData.chosed(index - 1)
-                  ? Colors.greenAccent
-                  : Colors.redAccent[200])
+              this.questionData.chosed(index - 1)
+              ? Colors.greenAccent
+              : Colors.redAccent[200])
               : Colors.grey[100],
           child: Text(String.fromCharCode(index + 48)),
         ),
@@ -175,17 +204,17 @@ class StatementTile extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Center(
           child: Column(children: [
-        Text(
-          "Enunciado",
-          style: TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.w600,
-              fontStyle: FontStyle.normal,
-              color: Colors.black,
-              decorationColor: Colors.black12),
-        ),
-        StatementWidget(quizData: this.questionData)
-      ])),
+            Text(
+              "Enunciado",
+              style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w600,
+                  fontStyle: FontStyle.normal,
+                  color: Colors.black,
+                  decorationColor: Colors.black12),
+            ),
+            StatementWidget(quizData: this.questionData)
+          ])),
     );
   }
 }
@@ -197,7 +226,6 @@ class StatementWidget extends StatelessWidget {
   StatementWidget({this.quizData});
 
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Padding(
         padding: EdgeInsets.fromLTRB(15, 20, 15, 15),
         child: Text(quizData.getText(), style: TextStyle(fontSize: 15)));

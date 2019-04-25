@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   void _awaitSolveQuestion() async {
     var result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => QuizPage()));
+        context, MaterialPageRoute(builder: (context) => QuizPage(this.user)));
 
     setState(() {
       text = result ?? text;

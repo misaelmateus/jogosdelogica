@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'quiz.dart';
-import 'question.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ResultPage extends StatelessWidget {
   final int numSolved;
