@@ -32,7 +32,7 @@ class LoginPage extends StatelessWidget {
         'name': user.displayName,
         'email': user.email,
         'photoUrl': user.photoUrl,
-      });
+      }, merge: true);
 
       // open HomePage for this user
       Navigator.pushReplacement(
