@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -87,9 +89,7 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void fetchQuizData() {
-    Firestore.instance.collection('quiz').limit(1).snapshots().listen((data) {
-      var doc = data.documents.first;
-
+    fetchRandomQuiz().then((doc) {
       List<QuestionData> questions = [];
       for (var q in doc['question']) {
         List<String> alternatives = [];
@@ -106,6 +106,35 @@ class _QuizPageState extends State<QuizPage> {
             QuizData(doc.documentID, doc['title'], doc['text'], questions);
       });
     });
+  }
+
+  Future<DocumentSnapshot> fetchRandomQuiz() async {
+    var random = Random();
+    var rnd = random.nextInt(1 << 32);
+
+    var query = await Firestore.instance
+        .collection('quiz')
+        .where('order', isGreaterThan: rnd)
+        .orderBy('order')
+        .limit(1)
+        .getDocuments();
+
+    if (query.documents.isNotEmpty) {
+      return query.documents.first;
+    }
+
+    query = await Firestore.instance
+        .collection('quiz')
+        .where('order', isLessThanOrEqualTo: rnd)
+        .orderBy('order', descending: true)
+        .limit(1)
+        .getDocuments();
+
+    if (query.documents.isNotEmpty) {
+      return query.documents.first;
+    }
+
+    return null;
   }
 
   @override
