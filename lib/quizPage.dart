@@ -109,10 +109,22 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   Future<DocumentSnapshot> fetchRandomQuiz() async {
-    var random = Random();
-    var rnd = random.nextInt(1 << 32);
-
     var query = await Firestore.instance
+        .collection('quiz')
+        .orderBy('order', descending: true)
+        .limit(1)
+        .getDocuments();
+
+    if (query.documents.isEmpty) {
+      return null;
+    }
+
+    var maxOrder = query.documents.first['order'];
+
+    var random = Random();
+    var rnd = random.nextInt(maxOrder);
+
+    query = await Firestore.instance
         .collection('quiz')
         .where('order', isGreaterThan: rnd)
         .orderBy('order')
