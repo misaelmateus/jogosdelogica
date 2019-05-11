@@ -30,10 +30,12 @@ class _HomePageState extends State<HomePage> {
     Firestore.instance
         .collection('user')
         .document(this.user.uid)
-        .get()
-        .then((DocumentSnapshot snapshot) {
+        .collection('quiz')
+        .where('done', isEqualTo: true)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
       setState(() {
-        this.qtdQuizSolved = snapshot.data['quizDone']?.length ?? 0;
+        this.qtdQuizSolved = snapshot.documents.length;
       });
     });
   }

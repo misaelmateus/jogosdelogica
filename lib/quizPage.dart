@@ -20,48 +20,43 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  QuizData data;
+  QuizData quiz;
   int lock = 0;
   FirebaseUser user;
 
   _QuizPageState(this.user);
 
   void _onButtonQuestionSolved() async {
-    int numSolved = 0, numQuestions = this.data.questions.length;
+    int numSolved = 0,
+        numQuestions = this.quiz.questions.length;
     for (var i = 0; i < numQuestions; i++) {
-      if (this.data.questions[i].chosed ==
-          this.data.questions[i].correctAlternative) numSolved++;
+      if (this.quiz.questions[i].chosed ==
+          this.quiz.questions[i].correctAlternative) numSolved++;
     }
 
     if (this.lock == 0) {
       // Update database of quizzes the user done
 
-      final userDoc =
-      Firestore.instance.collection('user').document(this.user.uid);
-      Firestore.instance.runTransaction((Transaction ts) async {
-        var userSnapshot = await ts.get(userDoc);
-        if (userSnapshot.exists) {
-          final quizAttempt = userSnapshot.data['quizAttempt'] ?? {};
-          final countQuiz = quizAttempt[this.data.uid] ?? 0;
+      final userQuizDoc = Firestore.instance
+          .collection('user')
+          .document(this.user.uid)
+          .collection('quiz')
+          .document(this.quiz.uid);
 
-          await ts.update(
-              userDoc,
-              (() =>
-              numSolved == numQuestions
-                  ? {
-                'quizAttempt': {
-                  this.data.uid: countQuiz + 1,
-                }
-              }
-                  : {
-                'quizAttempt': {
-                  this.data.uid: countQuiz + 1,
-                },
-                'quizDone': {
-                  this.data.uid: true,
-                },
-              })());
-        }
+      Firestore.instance.runTransaction((Transaction ts) async {
+        var userQuizSnapshot = await ts.get(userQuizDoc);
+
+        Map<String, dynamic> data = userQuizSnapshot.exists
+            ? userQuizSnapshot.data
+            : {
+          'attempt': 0,
+          'done': false,
+        };
+
+        data['attempt']++;
+        data['done'] |= numSolved == numQuestions;
+
+        await ts.set(userQuizDoc, data);
       });
     }
 
@@ -75,7 +70,7 @@ class _QuizPageState extends State<QuizPage> {
 
     setState(() {
       if (result == ResultPage.NEW_QUIZ_MESSAGE) {
-        this.data = null;
+        this.quiz = null;
         this.lock = 0;
         fetchQuizData();
       }
@@ -102,7 +97,7 @@ class _QuizPageState extends State<QuizPage> {
       }
 
       setState(() {
-        this.data =
+        this.quiz =
             QuizData(doc.documentID, doc['title'], doc['text'], questions);
       });
     });
@@ -151,7 +146,7 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (this.data == null) {
+    if (this.quiz == null) {
       // retorna progress indicator
       return Scaffold(
           appBar: AppBar(
@@ -169,16 +164,16 @@ class _QuizPageState extends State<QuizPage> {
         children: <Widget>[
           Expanded(
               child: ListView.builder(
-                  itemCount: this.data.lenght() + 1,
+                  itemCount: this.quiz.lenght() + 1,
                   itemBuilder: (context, index) => Card(
                       color: index == 0 ? Colors.grey[200] : Colors.white,
-                      elevation: index <= this.data.lenght()
+                      elevation: index <= this.quiz.lenght()
                           ? 1.0 + (index == 0 ? 1.0 : 0.0)
                           : 0.0,
                       child: index == 0
-                          ? StatementTile(questionData: this.data)
+                          ? StatementTile(questionData: this.quiz)
                           : QuestionTile(
-                          questionData: this.data,
+                          questionData: this.quiz,
                           index: index,
                           lock: this.lock)))),
           Container(
